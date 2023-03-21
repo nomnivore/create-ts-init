@@ -19,6 +19,9 @@
   "keywords": [],
   "author": "",
   "devDependencies": {
+    "@types/fs-extra": "^11.0.1",
+    "@types/inquirer": "^9.0.3",
+    "@types/node": "^18.15.5",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
     "eslint": "^8.36.0",
@@ -34,6 +37,7 @@
     "chalk": "^5.2.0",
     "commander": "^10.0.0",
     "execa": "^7.1.1",
+    "fs-extra": "^11.1.1",
     "inquirer": "^9.1.5",
     "ora": "^6.2.0"
   }
