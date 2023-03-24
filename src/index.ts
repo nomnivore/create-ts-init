@@ -30,7 +30,7 @@ const run = async () => {
   await checkExistingDir(programOptions);
 
   try {
-    scaffoldProject(programOptions);
+    await scaffoldProject(programOptions);
   } catch (err) {
     console.log(
       chalk.red(
@@ -73,7 +73,7 @@ const checkExistingDir = async (projectOptions: PromptAnswers) => {
   const { targetDir } = getPaths(projectOptions.projectName);
   // check if target directory exists and if it contains files
   if (fs.existsSync(targetDir)) {
-    if (fs.readdirSync(targetDir).length > 0) {
+    if ((await fs.readdir(targetDir)).length > 0) {
       console.log(
         chalk.cyan(
           `\nThe directory ${chalk.bold(
@@ -172,21 +172,20 @@ const initGit = async (projectOptions: PromptAnswers) => {
   }
 };
 
-const scaffoldProject = (projectOptions: PromptAnswers) => {
+const scaffoldProject = async (projectOptions: PromptAnswers) => {
   const { targetDir, templateDir } = getPaths(projectOptions.projectName);
 
   const baseSpinner = ora("Copying base template").start();
 
   // start by copying the base template to the targetDir
   try {
-    fs.copySync(path.join(templateDir, "base"), targetDir);
-    fs.moveSync(
+    await fs.copy(path.join(templateDir, "base"), targetDir);
+    await fs.move(
       path.join(targetDir, "_gitignore"),
       path.join(targetDir, ".gitignore")
     );
   } catch (err) {
     baseSpinner.fail("Could not copy base template");
-    console.log(chalk.red(err));
     abortCLI();
   }
 
@@ -195,7 +194,7 @@ const scaffoldProject = (projectOptions: PromptAnswers) => {
   console.log();
   // copy and merge code style option
   if (projectOptions.useStyle != "none") {
-    addExtra(projectOptions.useStyle, projectOptions);
+    await addExtra(projectOptions.useStyle, projectOptions);
   }
 
   // TODO: copy and merge any additional extras here
@@ -203,21 +202,21 @@ const scaffoldProject = (projectOptions: PromptAnswers) => {
   // finish configuring package.json
   console.log();
   const finishSpinner = ora("Finishing up").start();
-  const pkgJson = fs.readJsonSync(path.join(targetDir, "package.json"));
+  const pkgJson = await fs.readJson(path.join(targetDir, "package.json"));
   Object.assign(pkgJson, {
     name: projectOptions.projectName,
   });
   if (pkgJson.hasOwnProperty("$schema")) delete pkgJson["$schema"];
 
   // save package.json
-  fs.writeJsonSync(path.join(targetDir, "package.json"), pkgJson, {
+  await fs.writeJson(path.join(targetDir, "package.json"), pkgJson, {
     spaces: 2,
   });
 
   finishSpinner.succeed("Project scaffolded!");
 };
 
-const addExtra = (
+const addExtra = async (
   name: string,
   projectOptions: PromptAnswers,
   extrasDir?: string
@@ -234,36 +233,29 @@ const addExtra = (
   const spinner = ora(`Adding ${name}`).start();
 
   try {
-    fs.copySync(moduleDir, targetDir, {
+    await fs.copy(moduleDir, targetDir, {
       overwrite: true,
       filter: (name) => !name.endsWith("package.json"),
     });
-  } catch (err) {
+  } catch (_e) {
     spinner.fail(`Could not add ${name}`);
-
-    console.log(chalk.red(err));
     return;
   }
 
   try {
     if (fs.existsSync(path.join(moduleDir, "package.json"))) {
-      const mainPkg = fs.readJsonSync(path.join(targetDir, "package.json"));
-      const extraPkg = fs.readJsonSync(path.join(moduleDir, "package.json"));
+      const mainPkg = await fs.readJson(path.join(targetDir, "package.json"));
+      const extraPkg = await fs.readJson(path.join(moduleDir, "package.json"));
 
-      console.log(chalk.green(mainPkg));
-      console.log(chalk.yellow(extraPkg));
       mergeObject(mainPkg, extraPkg);
-      console.log(chalk.bold.green(mainPkg));
 
-      fs.writeJsonSync(path.join(targetDir, "package.json"), mainPkg, {
+      await fs.writeJson(path.join(targetDir, "package.json"), mainPkg, {
         spaces: 2,
       });
       spinner.succeed(`Added ${name}`);
     }
-  } catch (err) {
+  } catch (_e) {
     spinner.fail(`Could not add ${name}`);
-
-    console.log(chalk.red(err));
     return;
   }
 };
