@@ -19,7 +19,7 @@ type PromptAnswers = {
 };
 
 const run = async () => {
-  console.log(chalk.blue.bold("\nWelcome to create-ts-starter-app!"));
+  console.log(chalk.cyan.bold("\nWelcome to create-ts-starter-app!"));
   console.log(
     chalk.italic("\nPlease note that only npm is supported for now.\n")
   );
@@ -28,7 +28,6 @@ const run = async () => {
 
   await checkExistingDir(programOptions);
 
-  console.log();
   try {
     await scaffoldProject(programOptions);
   } catch (err) {
@@ -54,15 +53,16 @@ const run = async () => {
   nextCommands.push("npm run dev");
 
   console.log(
-    "\n",
-    chalk.green(
-      `${chalk.bold(programOptions.projectName)} has been successfully created!`
+    chalk.cyan(
+      `\nYour project ${chalk.bold(
+        programOptions.projectName
+      )} has been successfully created!`
     )
   );
   console.log(
-    chalk.green(
-      "You can now run the following commands to get started:\n",
-      ...nextCommands.map((cmd) => `\t${cmd}`)
+    chalk.cyan(
+      "You can run the following commands to get started:\n\n",
+      ...nextCommands.map((cmd) => `  ${cmd}\n`)
     ),
     "\n"
   );
@@ -74,8 +74,8 @@ const checkExistingDir = async (projectOptions: PromptAnswers) => {
   if (fs.existsSync(targetDir)) {
     if (fs.readdirSync(targetDir).length > 0) {
       console.log(
-        chalk.red(
-          `The directory ${chalk.bold(
+        chalk.cyan(
+          `\nThe directory ${chalk.bold(
             targetDir
           )} already exists and is not empty.`
         )
@@ -92,13 +92,13 @@ const checkExistingDir = async (projectOptions: PromptAnswers) => {
         abortCLI();
       }
 
-      const deleteSpinner = ora(`Deleting ${targetDir}`).start();
+      const deleteSpinner = ora(`Deleting contents of ${targetDir}`).start();
 
       try {
         await fs.remove(targetDir);
-        deleteSpinner.succeed();
+        deleteSpinner.succeed(`Deleted contents of ${targetDir}`);
       } catch (err) {
-        deleteSpinner.fail(`Could not delete ${targetDir}`);
+        deleteSpinner.fail(`Could not delete contents of ${targetDir}`);
         console.log(chalk.red(err));
 
         abortCLI();
@@ -140,8 +140,9 @@ const checkUpdates = async (projectOptions: PromptAnswers) => {
   try {
     const updateProcess = execa(
       "npx",
-      ["ncu", `--cwd "${targetDir}"`, ...projectOptions.checkUpdatesFlags],
+      ["npm-check-updates", ...projectOptions.checkUpdatesFlags],
       {
+        cwd: targetDir,
         stdio: "inherit",
       }
     );
@@ -190,8 +191,6 @@ const scaffoldProject = async (projectOptions: PromptAnswers) => {
 
   const pkgJson = await fs.readJson(path.join(targetDir, "package.json"));
 
-  // TODO: remove eslint/prettier configs based on useStyle
-
   // TODO: copy and merge any extras here
 
   // finish configuring package.json
@@ -204,7 +203,7 @@ const scaffoldProject = async (projectOptions: PromptAnswers) => {
     spaces: 2,
   });
 
-  spinner.succeed();
+  spinner.succeed("Project scaffolded");
 };
 
 const promptProjectOptions = async (): Promise<PromptAnswers> => {
@@ -221,8 +220,6 @@ const promptProjectOptions = async (): Promise<PromptAnswers> => {
     type: "list",
     choices: [
       { name: "ESLint + Prettier", value: "eslint-prettier" },
-      { name: "Prettier", value: "prettier" },
-      { name: "ESLint", value: "eslint" },
       new inquirer.Separator(),
       { name: "None", value: "none" },
     ],
@@ -266,39 +263,34 @@ const promptProjectOptions = async (): Promise<PromptAnswers> => {
           new inquirer.Separator("---Choose One---"),
           {
             name: "Latest (default)",
-            value: "-t latest",
+            value: ["-t", "latest"],
             checked: true,
             short: "Latest",
           },
           {
             name: "Minor only",
-            value: "-t minor",
+            value: ["-t", "minor"],
             short: "Minor",
           },
           {
             name: "Patch only",
-            value: "-t patch",
+            value: ["-t", "patch"],
             short: "Patch",
-          },
-          new inquirer.Separator(),
-          {
-            name: "Filter to peer compatible versions", // TODO: rephrase this to make more sense
-            value: "--peer",
-            short: "Peer",
           },
         ],
 
         // use a validate prop here to check for incompatible flags
         validate: (input: PromptAnswers["checkUpdatesFlags"]) => {
-          const targets = ["-t latest", "-t minor", "-t patch"];
-          const count = input.filter((x) => targets.includes(x)).length;
-
+          // make sure only one -t flag is set
+          const count = input.filter((x) => x === "-t").length;
           if (count > 1) {
             return "You can only select one target version";
           }
 
           return true;
         },
+
+        filter: (input: (string | string[])[]) => input.flat(),
         when: (answers) => answers.checkUpdates,
       },
     ]);
