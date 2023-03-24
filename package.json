@@ -2,6 +2,7 @@
   "name": "create-ts-starter-app",
   "version": "0.1.0",
   "description": "",
+  "type": "module",
   "bin": {
     "create-ts-starter-app": "./dist/index.js"
   },
