@@ -224,8 +224,9 @@ const addExtra = (
 ) => {
   const { targetDir, templateDir } = getPaths(projectOptions.projectName);
   extrasDir ||= path.join(templateDir, "extra");
+  const moduleDir = path.join(extrasDir, name);
 
-  if (!fs.existsSync(path.join(extrasDir, name))) {
+  if (!fs.existsSync(moduleDir)) {
     console.log(chalk.red(`Extra ${name} does not exist`));
     return;
   }
@@ -233,7 +234,7 @@ const addExtra = (
   const spinner = ora(`Adding ${name}`).start();
 
   try {
-    fs.copySync(path.join(extrasDir, name), targetDir, {
+    fs.copySync(moduleDir, targetDir, {
       overwrite: true,
       filter: (name) => !name.endsWith("package.json"),
     });
@@ -245,9 +246,9 @@ const addExtra = (
   }
 
   try {
-    if (fs.existsSync(path.join(extrasDir, "package.json"))) {
+    if (fs.existsSync(path.join(moduleDir, "package.json"))) {
       const mainPkg = fs.readJsonSync(path.join(targetDir, "package.json"));
-      const extraPkg = fs.readJsonSync(path.join(extrasDir, "package.json"));
+      const extraPkg = fs.readJsonSync(path.join(moduleDir, "package.json"));
 
       console.log(chalk.green(mainPkg));
       console.log(chalk.yellow(extraPkg));
