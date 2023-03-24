@@ -15,6 +15,7 @@ type PromptAnswers = {
   checkUpdates: boolean;
   checkUpdatesFlags: string[];
   installDeps: boolean;
+  initGit: boolean;
 };
 
 const run = async () => {
@@ -42,7 +43,29 @@ const run = async () => {
     abortCLI();
   }
 
+  await checkUpdates(programOptions);
+  await initGit(programOptions);
   await installDependencies(programOptions);
+
+  const nextCommands = [`cd ${programOptions.projectName}`];
+  if (!programOptions.installDeps) {
+    nextCommands.push("npm install");
+  }
+  nextCommands.push("npm run dev");
+
+  console.log(
+    "\n",
+    chalk.green(
+      `${chalk.bold(programOptions.projectName)} has been successfully created!`
+    )
+  );
+  console.log(
+    chalk.green(
+      "You can now run the following commands to get started:\n",
+      ...nextCommands.map((cmd) => `\t${cmd}`)
+    ),
+    "\n"
+  );
 };
 
 const checkExistingDir = async (projectOptions: PromptAnswers) => {
@@ -86,6 +109,7 @@ const checkExistingDir = async (projectOptions: PromptAnswers) => {
 
 const installDependencies = async (projectOptions: PromptAnswers) => {
   if (!projectOptions.installDeps) return;
+
   const { targetDir } = getPaths(projectOptions.projectName);
   try {
     console.log(`Running ${chalk.italic("npm install")} for you.`);
@@ -109,10 +133,47 @@ const installDependencies = async (projectOptions: PromptAnswers) => {
   }
 };
 
+const checkUpdates = async (projectOptions: PromptAnswers) => {
+  if (!projectOptions.checkUpdates) return;
+
+  const { targetDir } = getPaths(projectOptions.projectName);
+  try {
+    const updateProcess = execa(
+      "npx",
+      ["ncu", `--cwd "${targetDir}"`, ...projectOptions.checkUpdatesFlags],
+      {
+        stdio: "inherit",
+      }
+    );
+
+    await updateProcess;
+  } catch (err) {
+    console.log(chalk.red(err));
+  }
+};
+
+const initGit = async (projectOptions: PromptAnswers) => {
+  if (!projectOptions.initGit) return;
+
+  // TODO: check if git is installed
+
+  const spinner = ora("Initializing git repository").start();
+  const { targetDir } = getPaths(projectOptions.projectName);
+  try {
+    await execa("git", ["init"], { cwd: targetDir });
+    await execa("git", ["add", "."], { cwd: targetDir });
+
+    spinner.succeed("Git repository initialized and files staged");
+  } catch (err) {
+    spinner.fail("Could not initialize git repository");
+    console.log(chalk.red(err));
+  }
+};
+
 const scaffoldProject = async (projectOptions: PromptAnswers) => {
   const { targetDir, templateDir } = getPaths(projectOptions.projectName);
 
-  const scaffoldSpinner = ora("Scaffolding your project").start();
+  const spinner = ora("Scaffolding your project").start();
 
   // start by copying the base template to the targetDir
   try {
@@ -122,7 +183,7 @@ const scaffoldProject = async (projectOptions: PromptAnswers) => {
       path.join(targetDir, ".gitignore")
     );
   } catch (err) {
-    scaffoldSpinner.fail("Could not copy base template");
+    spinner.fail("Could not copy base template");
     console.log(chalk.red(err));
     abortCLI();
   }
@@ -143,7 +204,7 @@ const scaffoldProject = async (projectOptions: PromptAnswers) => {
     spaces: 2,
   });
 
-  scaffoldSpinner.succeed();
+  spinner.succeed();
 };
 
 const promptProjectOptions = async (): Promise<PromptAnswers> => {
@@ -166,6 +227,13 @@ const promptProjectOptions = async (): Promise<PromptAnswers> => {
       { name: "None", value: "none" },
     ],
     default: "eslint-prettier",
+  });
+
+  const { initGit } = await inquirer.prompt<PromptAnswers>({
+    name: "initGit",
+    message: "Do you want to initialize a new git repository?",
+    type: "confirm",
+    default: true,
   });
 
   const { checkUpdates, checkUpdatesFlags } =
@@ -250,6 +318,7 @@ const promptProjectOptions = async (): Promise<PromptAnswers> => {
     checkUpdates,
     checkUpdatesFlags,
     installDeps,
+    initGit,
   };
 
   return programOptions;
