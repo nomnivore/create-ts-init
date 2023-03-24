@@ -8,6 +8,7 @@ import path from "path";
 import { execa } from "execa";
 
 import { root } from "./util/dirname.js";
+import { mergeObject } from "./util/mergeObject.js";
 
 type PromptAnswers = {
   projectName: string;
@@ -29,7 +30,7 @@ const run = async () => {
   await checkExistingDir(programOptions);
 
   try {
-    await scaffoldProject(programOptions);
+    scaffoldProject(programOptions);
   } catch (err) {
     console.log(
       chalk.red(
@@ -43,8 +44,8 @@ const run = async () => {
   }
 
   await checkUpdates(programOptions);
-  await initGit(programOptions);
   await installDependencies(programOptions);
+  await initGit(programOptions);
 
   const nextCommands = [`cd ${programOptions.projectName}`];
   if (!programOptions.installDeps) {
@@ -95,7 +96,7 @@ const checkExistingDir = async (projectOptions: PromptAnswers) => {
       const deleteSpinner = ora(`Deleting contents of ${targetDir}`).start();
 
       try {
-        await fs.remove(targetDir);
+        fs.removeSync(targetDir);
         deleteSpinner.succeed(`Deleted contents of ${targetDir}`);
       } catch (err) {
         deleteSpinner.fail(`Could not delete contents of ${targetDir}`);
@@ -171,39 +172,99 @@ const initGit = async (projectOptions: PromptAnswers) => {
   }
 };
 
-const scaffoldProject = async (projectOptions: PromptAnswers) => {
+const scaffoldProject = (projectOptions: PromptAnswers) => {
   const { targetDir, templateDir } = getPaths(projectOptions.projectName);
 
-  const spinner = ora("Scaffolding your project").start();
+  const baseSpinner = ora("Copying base template").start();
 
   // start by copying the base template to the targetDir
   try {
-    await fs.copy(path.join(templateDir, "base"), targetDir);
-    await fs.move(
+    fs.copySync(path.join(templateDir, "base"), targetDir);
+    fs.moveSync(
       path.join(targetDir, "_gitignore"),
       path.join(targetDir, ".gitignore")
     );
   } catch (err) {
-    spinner.fail("Could not copy base template");
+    baseSpinner.fail("Could not copy base template");
     console.log(chalk.red(err));
     abortCLI();
   }
 
-  const pkgJson = await fs.readJson(path.join(targetDir, "package.json"));
+  baseSpinner.succeed("Base template copied");
 
-  // TODO: copy and merge any extras here
+  console.log();
+  // copy and merge code style option
+  if (projectOptions.useStyle != "none") {
+    addExtra(projectOptions.useStyle, projectOptions);
+  }
+
+  // TODO: copy and merge any additional extras here
 
   // finish configuring package.json
+  console.log();
+  const finishSpinner = ora("Finishing up").start();
+  const pkgJson = fs.readJsonSync(path.join(targetDir, "package.json"));
   Object.assign(pkgJson, {
     name: projectOptions.projectName,
   });
+  if (pkgJson.hasOwnProperty("$schema")) delete pkgJson["$schema"];
 
   // save package.json
-  await fs.writeJson(path.join(targetDir, "package.json"), pkgJson, {
+  fs.writeJsonSync(path.join(targetDir, "package.json"), pkgJson, {
     spaces: 2,
   });
 
-  spinner.succeed("Project scaffolded");
+  finishSpinner.succeed("Project scaffolded!");
+};
+
+const addExtra = (
+  name: string,
+  projectOptions: PromptAnswers,
+  extrasDir?: string
+) => {
+  const { targetDir, templateDir } = getPaths(projectOptions.projectName);
+  extrasDir ||= path.join(templateDir, "extra");
+
+  if (!fs.existsSync(path.join(extrasDir, name))) {
+    console.log(chalk.red(`Extra ${name} does not exist`));
+    return;
+  }
+
+  const spinner = ora(`Adding ${name}`).start();
+
+  try {
+    fs.copySync(path.join(extrasDir, name), targetDir, {
+      overwrite: true,
+      filter: (name) => !name.endsWith("package.json"),
+    });
+  } catch (err) {
+    spinner.fail(`Could not add ${name}`);
+
+    console.log(chalk.red(err));
+    return;
+  }
+
+  try {
+    if (fs.existsSync(path.join(extrasDir, "package.json"))) {
+      const mainPkg = fs.readJsonSync(path.join(targetDir, "package.json"));
+      const extraPkg = fs.readJsonSync(path.join(extrasDir, "package.json"));
+
+      console.log(chalk.green(mainPkg));
+      console.log(chalk.yellow(extraPkg));
+      mergeObject(mainPkg, extraPkg);
+      console.log(chalk.bold.green(mainPkg));
+
+      fs.writeJsonSync(path.join(targetDir, "package.json"), mainPkg, {
+        spaces: 2,
+      });
+      spinner.succeed(`Added ${name}`);
+    }
+  } catch (err) {
+    spinner.fail(`Could not add ${name}`);
+
+    console.log(chalk.red(err));
+    return;
+  }
 };
 
 const promptProjectOptions = async (): Promise<PromptAnswers> => {
