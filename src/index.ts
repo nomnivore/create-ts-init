@@ -22,7 +22,12 @@ type PromptAnswers = {
 const run = async () => {
   console.log(chalk.cyan.bold("\nWelcome to create-ts-init!"));
   console.log(
-    chalk.italic("\nPlease note that only npm is supported for now.\n")
+    chalk.yellow(
+      "\nPlease note that only npm is supported for now.",
+      "\nThis version is an early release and you may run into issues during use.",
+      "\nFeel free to submit any feedback to the repo's issue tracker:",
+      "\nhttps://github.com/nomnivore/create-ts-init/issues\n"
+    )
   );
 
   const programOptions = await promptProjectOptions();
