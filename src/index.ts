@@ -118,7 +118,7 @@ const installDependencies = async (projectOptions: PromptAnswers) => {
 
   const { targetDir } = getPaths(projectOptions.projectName);
   try {
-    console.log(`Running ${chalk.italic("npm install")} for you.`);
+    console.log(chalk.cyan(`Running ${chalk.italic("npm install")} for you.`));
     const installProcess = execa("npm", ["install"], {
       cwd: targetDir,
       stdio: "inherit",
@@ -142,6 +142,11 @@ const installDependencies = async (projectOptions: PromptAnswers) => {
 const checkUpdates = async (projectOptions: PromptAnswers) => {
   if (!projectOptions.checkUpdates) return;
 
+  console.log(
+    chalk.cyan(
+      `Checking for updates with ${chalk.italic("npm-check-updates")}...`
+    )
+  );
   const { targetDir } = getPaths(projectOptions.projectName);
   try {
     const updateProcess = execa(
