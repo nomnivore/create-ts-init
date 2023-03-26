@@ -1,6 +1,6 @@
 # create-ts-init
 
-`create-ts-init` is a simple and opinionated boilerplate generator for TypeScript projects. Spend less time configuring and more time developing with this CLI tool.
+`create-ts-init` is a simple and opinionated boilerplate generator for TypeScript projects. Spend less time configuring new projects with this CLI tool.
 
 ## Installation
 
