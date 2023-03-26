@@ -1,24 +1,25 @@
 {
-  "name": "create-ts-starter-app",
+  "name": "create-ts-init",
   "version": "0.1.0",
-  "description": "",
+  "description": "A simple boilerplate generator for TypeScript projects that helps you save time on configuration.",
   "type": "module",
+  "license": "MIT",
+  "homepage": "https://github.com/nomnivore/create-ts-init",
+  "main": "./dist/index.js",
   "bin": {
-    "create-ts-starter-app": "./dist/index.js"
+    "create-ts-init": "./dist/index.js"
   },
   "scripts": {
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "prepublish": "npm run build",
-    "lint": "eslint .",
+    "prepack": "npm run build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "tidy": "npm run format && npm run lint"
+    "lint": "eslint .",
+    "lint:fmt": "npm run format && npm run lint"
   },
-  "keywords": [],
-  "author": "",
   "devDependencies": {
     "@types/fs-extra": "^11.0.1",
     "@types/inquirer": "^9.0.3",
@@ -41,5 +42,15 @@
     "fs-extra": "^11.1.1",
     "inquirer": "^9.1.5",
     "ora": "^6.2.0"
-  }
+  },
+  "keywords": [
+    "typescript",
+    "starter",
+    "boilerplate",
+    "template",
+    "cli",
+    "scaffold",
+    "init",
+    "initialization"
+  ]
 }
