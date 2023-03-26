@@ -1,10 +1,10 @@
 # create-ts-init
 
-create-ts-init (name pending) is a simple and opinionated boilerplate generator for TypeScript projects. Spend less time configuring and more time developing with this CLI tool.
+`create-ts-init` is a simple and opinionated boilerplate generator for TypeScript projects. Spend less time configuring and more time developing with this CLI tool.
 
 ## Installation
 
-You can install create-ts-init globally using `npm`:
+You can install `create-ts-init` globally using `npm`:
 
 ```bash
 npm install -g create-ts-init
@@ -34,7 +34,7 @@ This will start the CLI and run through a few prompts to create your new project
 
 ### Minimal base
 
-CTSA is designed to be fully modular. The base template is minimal and contains only what is necessary to compile and run TypeScript code. Additional functionality must be enabled through the prompts, including code style enforcement using ESLint and Prettier.
+`create-ts-init` is designed to be fully modular. The base template is minimal and contains only what is necessary to compile and run TypeScript code. Additional functionality must be enabled through the prompts, including code style enforcement using ESLint and Prettier.
 
 Additional features can be scaffolded to a new application through use of modules (or extras).
 
@@ -82,4 +82,4 @@ create-ts-init
 
 ## License
 
-create-ts-init is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+`create-ts-init` is licensed under the [MIT License](https://opensource.org/licenses/MIT).
