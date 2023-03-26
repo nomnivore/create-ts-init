@@ -1,9 +1,9 @@
 function isObject(obj: unknown): obj is object {
-  return obj !== null && typeof obj == "object" && !Array.isArray(obj);
+  return obj !== null && typeof obj === "object" && !Array.isArray(obj);
 }
 
-type MergedObject<T, U> = T & U;
-type MergeableObject = Record<string, unknown>;
+export type MergedObject<T, U> = T & U;
+export type MergeableObject = Record<string, unknown>;
 
 export function mergeObject<
   T extends MergeableObject,
