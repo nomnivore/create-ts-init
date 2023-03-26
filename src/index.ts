@@ -20,7 +20,7 @@ type PromptAnswers = {
 };
 
 const run = async () => {
-  console.log(chalk.cyan.bold("\nWelcome to create-ts-starter-app!"));
+  console.log(chalk.cyan.bold("\nWelcome to create-ts-init!"));
   console.log(
     chalk.italic("\nPlease note that only npm is supported for now.\n")
   );
@@ -191,10 +191,10 @@ const scaffoldProject = async (projectOptions: PromptAnswers) => {
 
   baseSpinner.succeed("Base template copied");
 
-  console.log();
   // copy and merge code style option
   if (projectOptions.useStyle != "none") {
-    await addExtra(projectOptions.useStyle, projectOptions);
+    console.log();
+    await addModule(projectOptions.useStyle, projectOptions);
   }
 
   // TODO: copy and merge any additional extras here
@@ -216,7 +216,7 @@ const scaffoldProject = async (projectOptions: PromptAnswers) => {
   finishSpinner.succeed("Project scaffolded!");
 };
 
-const addExtra = async (
+const addModule = async (
   name: string,
   projectOptions: PromptAnswers,
   extrasDir?: string
@@ -265,7 +265,7 @@ const promptProjectOptions = async (): Promise<PromptAnswers> => {
     name: "projectName",
     message: "What will your project be named?",
     type: "input",
-    default: "my-ts-starter-app",
+    default: "my-ts-app",
   });
 
   const { useStyle } = await inquirer.prompt<PromptAnswers>({
