@@ -8,7 +8,7 @@ import path from "path";
 import { execa } from "execa";
 
 import { root } from "./util/dirname.js";
-import { mergeObject } from "./util/mergeObject.js";
+import { MergeableObject, mergeObject } from "./util/mergeObject.js";
 
 type PromptAnswers = {
   projectName: string;
@@ -86,7 +86,7 @@ const checkExistingDir = async (projectOptions: PromptAnswers) => {
           )} already exists and is not empty.`
         )
       );
-      const { overwrite } = await inquirer.prompt({
+      const { overwrite } = await inquirer.prompt<{ overwrite: boolean }>({
         name: "overwrite",
         message:
           "Do you want to overwrite all files and folders in this directory?",
@@ -212,11 +212,12 @@ const scaffoldProject = async (projectOptions: PromptAnswers) => {
   // finish configuring package.json
   console.log();
   const finishSpinner = ora("Finishing up").start();
-  const pkgJson = await fs.readJson(path.join(targetDir, "package.json"));
+  const pkgJson = (await fs.readJson(path.join(targetDir, "package.json"))) as {
+    name: string;
+  }; // quick and dirty cast until we get proper typings
   Object.assign(pkgJson, {
     name: projectOptions.projectName,
   });
-  if (pkgJson.hasOwnProperty("$schema")) delete pkgJson["$schema"];
 
   // save package.json
   await fs.writeJson(path.join(targetDir, "package.json"), pkgJson, {
@@ -254,8 +255,12 @@ const addModule = async (
 
   try {
     if (fs.existsSync(path.join(moduleDir, "package.json"))) {
-      const mainPkg = await fs.readJson(path.join(targetDir, "package.json"));
-      const extraPkg = await fs.readJson(path.join(moduleDir, "package.json"));
+      const mainPkg = (await fs.readJson(
+        path.join(targetDir, "package.json")
+      )) as MergeableObject;
+      const extraPkg = (await fs.readJson(
+        path.join(moduleDir, "package.json")
+      )) as MergeableObject;
 
       mergeObject(mainPkg, extraPkg);
 
