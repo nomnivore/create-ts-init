@@ -2,14 +2,16 @@ import chalk from "chalk";
 import { execa } from "execa";
 import { getPaths } from "../util/getPaths.js";
 import { type PromptAnswers } from "./promptOptions.js";
+import { getPkgInstall } from "../util/pkgMan.js";
 
 export const installDependencies = async (projectOptions: PromptAnswers) => {
   if (!projectOptions.installDeps) return;
 
+  const { file, args, fullCmd } = getPkgInstall();
   const { targetDir } = getPaths(projectOptions.projectName);
   try {
-    console.log(chalk.cyan(`Running ${chalk.italic("npm install")} for you.`));
-    const installProcess = execa("npm", ["install"], {
+    console.log(chalk.cyan(`Running ${chalk.italic(fullCmd)} for you.`));
+    const installProcess = execa(file, args, {
       cwd: targetDir,
       stdio: "inherit",
     });

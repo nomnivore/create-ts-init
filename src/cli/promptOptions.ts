@@ -1,5 +1,6 @@
 import inquirer from "inquirer";
 import chalk from "chalk";
+import { getPkgInstall } from "../util/pkgMan.js";
 
 export type PromptAnswers = {
   projectName: string;
@@ -99,10 +100,11 @@ export const promptProjectOptions = async (): Promise<PromptAnswers> => {
       },
     ]);
 
+  const { fullCmd } = getPkgInstall();
   const { installDeps } = await inquirer.prompt<PromptAnswers>({
     name: "installDeps",
     message: `Do you want to install dependencies with ${chalk.italic(
-      "npm install"
+      fullCmd
     )}?`,
     type: "confirm",
     default: true,
