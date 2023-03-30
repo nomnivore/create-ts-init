@@ -26,13 +26,14 @@ export const scaffoldProject = async (projectOptions: PromptAnswers) => {
 
   baseSpinner.succeed("Base template copied");
 
-  // copy and merge code style option
-  if (projectOptions.useStyle != "none") {
-    console.log();
-    await addModule(projectOptions.useStyle, projectOptions);
-  }
+  // copy and merge any additional extras
 
-  // TODO: copy and merge any additional extras here
+  if (projectOptions.extras.length > 0) {
+    console.log();
+    for (const extra of projectOptions.extras) {
+      await addModule(extra, projectOptions);
+    }
+  }
 
   // finish configuring package.json
   console.log();
