@@ -4,7 +4,7 @@ import { getPkgInstall } from "../util/pkgMan.js";
 
 export type PromptAnswers = {
   projectName: string;
-  useStyle: string;
+  extras: string[];
   checkUpdates: boolean;
   checkUpdatesFlags: string[];
   installDeps: boolean;
@@ -19,14 +19,14 @@ export const promptProjectOptions = async (): Promise<PromptAnswers> => {
     default: "my-ts-app",
   });
 
-  const { useStyle } = await inquirer.prompt<PromptAnswers>({
-    name: "useStyle",
-    message: "How do you want to enforce code style?",
-    type: "list",
+  const { extras } = await inquirer.prompt<PromptAnswers>({
+    name: "extras",
+    message: "Which extras would you like to include?",
+    type: "checkbox",
+    // TODO: which of these should be default?
     choices: [
-      { name: "ESLint + Prettier", value: "eslint-prettier" },
-      new inquirer.Separator(),
-      { name: "None", value: "none" },
+      { name: "ESLint + Prettier", value: "eslint-prettier", checked: true },
+      { name: "Jest", value: "jest" },
     ],
     default: "eslint-prettier",
   });
@@ -112,7 +112,7 @@ export const promptProjectOptions = async (): Promise<PromptAnswers> => {
 
   const programOptions: PromptAnswers = {
     projectName,
-    useStyle,
+    extras,
     checkUpdates,
     checkUpdatesFlags,
     installDeps,
