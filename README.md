@@ -2,33 +2,42 @@
 
 `create-ts-init` is a simple and opinionated boilerplate generator for TypeScript projects. Spend less time configuring new projects with this CLI tool.
 
-## Installation
+## Installation / Usage
 
-You can install `create-ts-init` globally using `npm`:
+You can use your favorite package manager to download and run the generator, and your choice will also be respected when the CLI installs dependencies.
+
+### npm
+
+```bash
+npx create-ts-init@latest
+```
+
+### pnpm
+
+```bash
+pnpx create-ts-init@latest
+```
+
+### yarn
+
+```bash
+yarn create ts-init
+```
+
+### Global Install
+
+You can also use any of these to install `create-ts-init` globally. This links a binary that can be used without redownloading.
+
+You will still be notified of new versions, but you will have to update manually to get the latest features.
+
+Example:
 
 ```bash
 npm install -g create-ts-init
-```
 
-Alternatively, you can use `npx` to run the tool without installing it:
-
-```bash
-npx create-ts-init
-```
-
-## Usage
-
-Create a new project by running:
-
-```bash
-# global install
 create-ts-init
-
-# npx
-npx create-ts-init
 ```
 
-This will start the CLI and run through a few prompts to create your new project.
 
 ## Features
 
@@ -44,7 +53,6 @@ When creating a new application, you will be asked if you want to automatically 
 
 ## Planned features
 
-- Self-update checking
 - Support for more modules
 - Command arguments/flags
 
