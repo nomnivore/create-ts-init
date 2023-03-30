@@ -1,6 +1,6 @@
 # create-ts-init
 
-`create-ts-init` is a simple and opinionated boilerplate generator for TypeScript projects. Spend less time configuring new projects with this CLI tool.
+`create-ts-init` is a simple and opinionated boilerplate generator for Node.js-based TypeScript projects. Spend less time configuring new projects with this CLI tool.
 
 ## Installation / Usage
 
@@ -38,6 +38,26 @@ npm install -g create-ts-init
 create-ts-init
 ```
 
+### Sample Output
+
+Example of a new project generated using both `eslint-prettier` and `jest` [extras](#extra-modules):
+
+```
+my-ts-app/
+├── src/
+│   └── index.ts
+├── tests/
+│   └── index.test.ts
+├── .eslintrc.json
+├── .gitignore
+├── .prettierignore
+├── .prettierrc.json
+├── jest.config.js
+├── package.json
+├── tsconfig.eslint.json
+└── tsconfig.json
+```
+
 
 ## Features
 
@@ -50,6 +70,22 @@ Additional features can be scaffolded to a new application through use of module
 ### Update checking
 
 When creating a new application, you will be asked if you want to automatically check for package updates. The CLI will then use the [npm-check-updates](https://github.com/raineorshine/npm-check-updates) tool to apply the latest versions directly to your new `package.json` while respecting their original semver rules.
+
+### Extra Modules
+
+When generating your application, you will be able to select any of the following extras:
+
+#### eslint-prettier
+
+Adds configuration for your project to use [ESlint](https://eslint.org) and [Prettier](https://prettier.io) alongside each other. Scripts are added to `package.json` to manually check and enforce code style, especially if you don't have the related editor extensions.
+
+ESlint is configured with some sensible defaults including the [typescript-eslint parser](https://typescript-eslint.io).
+
+#### jest
+
+Adds [Jest](https://jestjs.io) to your project configured with the [ts-jest](https://www.npmjs.com/package/ts-jest) transformer to directly run `.ts` tests without needing to include them in your builds. Scripts are added to `package.json`, but it will also work out of the box with `npx jest`.
+
+By default, tests are configured to run in `./tests/`.
 
 ## Planned features
 
