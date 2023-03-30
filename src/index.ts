@@ -9,12 +9,14 @@ import { promptProjectOptions } from "./cli/promptOptions.js";
 import { checkUpdates } from "./cli/checkUpdates.js";
 import { initGit } from "./cli/initGit.js";
 import { scaffoldProject } from "./cli/scaffoldProject.js";
+import { checkSelfUpdate } from "./cli/checkSelfUpdate.js";
 
 const run = async () => {
   console.log(chalk.cyan.bold("\nWelcome to create-ts-init!"));
+  await checkSelfUpdate();
   console.log(
     chalk.yellow(
-      "\nThis version is an early release and you may run into issues during use.",
+      "This version is an early release and you may run into issues during use.",
       "\nFeel free to submit any feedback to the repo's issue tracker:",
       "\nhttps://github.com/nomnivore/create-ts-init/issues\n"
     )

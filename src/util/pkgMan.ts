@@ -37,6 +37,7 @@ export const getPkgRunner = (pkgMan?: PkgMan) => {
   return {
     file,
     argsPrefix,
+    fullCmd: `${file} ${argsPrefix.join(" ")}`.trim(),
     ncuSuffix, // for npm-check-updates
   };
 };
