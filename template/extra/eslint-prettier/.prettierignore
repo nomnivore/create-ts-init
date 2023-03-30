@@ -1,0 +1,11 @@
+# Ignore artifacts:
+build
+coverage
+tmp
+out
+dist
+
+# Ignore lockfiles:
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
