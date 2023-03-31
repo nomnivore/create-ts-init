@@ -89,6 +89,7 @@ By default, tests are configured to run in `./tests/`.
 
 ## Planned features
 
+- Switch template to ESM
 - Support for more modules
 - Command arguments/flags
 
