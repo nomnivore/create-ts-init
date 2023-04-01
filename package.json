@@ -5,14 +5,15 @@
   "type": "module",
   "license": "MIT",
   "homepage": "https://github.com/nomnivore/create-ts-init",
-  "main": "./dist/index.js",
+  "exports": null,
   "bin": {
     "create-ts-init": "./dist/index.js"
   },
   "scripts": {
     "start": "node dist/index.js",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
+    "build": "tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
+    "clean": "rm -rf dist",
     "prepack": "npm run build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
