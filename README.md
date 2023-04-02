@@ -1,8 +1,8 @@
 # create-ts-init
+
 ![npm version](https://img.shields.io/npm/v/create-ts-init)
 ![NPM](https://img.shields.io/npm/l/create-ts-init)
 ![npm](https://img.shields.io/npm/dw/create-ts-init)
-
 
 `create-ts-init` is a simple and opinionated boilerplate generator for Node.js-based ESM TypeScript projects. Spend less time configuring new projects with this CLI tool.
 
