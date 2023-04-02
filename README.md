@@ -1,6 +1,10 @@
 # create-ts-init
+![npm version](https://img.shields.io/npm/v/create-ts-init)
+![NPM](https://img.shields.io/npm/l/create-ts-init)
+![npm](https://img.shields.io/npm/dw/create-ts-init)
 
-`create-ts-init` is a simple and opinionated boilerplate generator for Node.js-based TypeScript projects. Spend less time configuring new projects with this CLI tool.
+
+`create-ts-init` is a simple and opinionated boilerplate generator for Node.js-based ESM TypeScript projects. Spend less time configuring new projects with this CLI tool.
 
 ## Installation / Usage
 
@@ -54,10 +58,9 @@ my-ts-app/
 ├── .prettierrc.json
 ├── jest.config.js
 ├── package.json
-├── tsconfig.eslint.json
+├── tsconfig.build.json
 └── tsconfig.json
 ```
-
 
 ## Features
 
@@ -89,9 +92,8 @@ By default, tests are configured to run in `./tests/`.
 
 ## Planned features
 
-- Switch template to ESM
-- Support for more modules
 - Command arguments/flags
+- Support for more modules
 
 ## Contributing
 
