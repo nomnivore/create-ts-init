@@ -6,6 +6,8 @@
 
 `create-ts-init` is a simple and opinionated boilerplate generator for Node.js-based ESM TypeScript projects. Spend less time configuring new projects with this CLI tool.
 
+<img alt="demo gif" src="../assets/demo.gif" width=650>
+
 ## Installation / Usage
 
 You can use your favorite package manager to download and run the generator, and your choice will also be respected when the CLI installs dependencies.
