@@ -1,6 +1,6 @@
 {
   "name": "create-ts-init",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A simple boilerplate generator for TypeScript projects that helps you save time on configuration.",
   "type": "module",
   "license": "MIT",
