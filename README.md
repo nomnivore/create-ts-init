@@ -6,7 +6,7 @@
 
 `create-ts-init` is a simple and opinionated boilerplate generator for Node.js-based ESM TypeScript projects. Spend less time configuring new projects with this CLI tool.
 
-<img alt="demo gif" src="../assets/demo.gif" width=650>
+<img alt="demo gif" src="https://github.com/nomnivore/create-ts-init/blob/assets/demo.gif" width=650>
 
 ## Installation / Usage
 
@@ -29,6 +29,32 @@ pnpx create-ts-init@latest
 ```bash
 yarn create ts-init
 ```
+
+### Arguments
+
+You can supply a project name as a command argument and any additional flags to customize the tool's behavior.
+
+```bash
+create-ts-init [options] [project-name]
+```
+
+| Argument       | Description                  |
+| -------------- | ---------------------------- |
+| `project-name` | Name of the new project      |
+
+---
+
+| Option              | Description                                   |
+| ------------------- | --------------------------------------------- |
+| `-e, --extras`      | Use default extras                            |
+| `--no-extras`       | Do not use extras                             |
+| `-u, --update`      | Check for and apply dependency updates        |
+| `--no-update`       | Do not check for dependency updates           |
+| `-i, --install`     | Install dependencies                          |
+| `--no-install`      | Do not install dependencies                   |
+| `-g, --git`         | Initialize a Git repository                   |
+| `--no-git`          | Do not initialize a Git repository            |
+| `-h, --help`        | Display help for the command                  |
 
 ### Global Install
 
@@ -94,8 +120,8 @@ By default, tests are configured to run in `./tests/`.
 
 ## Planned features
 
-- Command arguments/flags
-- Support for more modules
+- [x] ~~Command arguments/flags~~
+- [ ] Support for more modules
 
 ## Contributing
 
