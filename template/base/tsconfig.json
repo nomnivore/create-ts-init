@@ -12,8 +12,5 @@
     "declaration": true,
     "noEmit": true
   },
-  "ts-node": {
-    "esm": true
-  },
   "exclude": ["node_modules", "dist", "build"]
 }
