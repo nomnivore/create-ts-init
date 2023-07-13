@@ -4,14 +4,15 @@
   "type": "module",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
+    "dev": "tsx src/index.ts",
+    "dev:watch": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.build.json",
     "clean": "rm -rf dist"
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^18.15.5",
-    "typescript": "^5.0.2",
-    "ts-node": "^10.9.1"
+    "@types/node": "^20.4.2",
+    "typescript": "^5.1.6",
+    "tsx": "^3.12.7"
   }
 }
